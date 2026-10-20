@@ -291,7 +291,9 @@ printf '# 03_c\n## What must never happen here at any stage of the work\nThe AI 
 out="$(bash "$HERE/repeats.sh" "$RH" 2>&1)"; rc=$?
 expect_exit "repeats quiet when 3 files share only a heading" "$rc" 0
 RL="$W/repeat-links"; mkdir -p "$RL/01_a" "$RL/02_b" "$RL/03_c"
-for d in 01_a 02_b 03_c; do printf '# %s\nShared rules:\n- [approval-and-delegation](../_shared/approval-and-delegation.md)\n- [generation-and-retries](../_shared/generation-and-retries.md)\nRead `../_shared/approval-and-delegation.md` and `../_shared/generation-and-retries.md` first.\nThis step does its own job, %s.\n' "$d" "$d" > "$RL/$d/CONTEXT.md"; done
+i=0; for d in 01_a 02_b 03_c; do i=$((i + 1))
+  case $i in 1) job="Draft the plan." ;; 2) job="Render each frame." ;; 3) job="Cut the final film." ;; esac
+  printf '# %s\n%s\n- [approval-and-delegation](../_shared/approval-and-delegation.md)\n- [generation-and-retries](../_shared/generation-and-retries.md)\nCheck `../_shared/approval-and-delegation.md` and `../_shared/generation-and-retries.md`.\n' "$d" "$job" > "$RL/$d/CONTEXT.md"; done
 out="$(bash "$HERE/repeats.sh" "$RL" 2>&1)"; rc=$?
 expect_exit "repeats quiet when 3 files only point to the same shared files" "$rc" 0
 
