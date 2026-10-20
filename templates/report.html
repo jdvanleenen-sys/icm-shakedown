@@ -1,0 +1,187 @@
+<!-- The shakedown report page, AI the vL Way edition. Fill every {{slot}}.
+     Brand source of truth: Jeff-HQ/90 Jeff Standards/brand-ai-the-vl-way.md (sections 2 to 4).
+     Palette: Cognac, Deep Navy, Warm White, 70/20/10. States reuse the accents:
+     Navy = settled (proven, still true), Cognac = attention (missing, blind, not true). No red, no green.
+     Type: DM Sans, JetBrains Mono for paths and commands. Sentence case. No em dashes.
+     The original RyMac look is kept as report-rymac.html.orig. -->
+<title>{{TARGET NAME}} shakedown</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one Warm White page, white report cards, a Deep Navy fixes panel, Cognac marks what needs you. */
+:root{
+  --page:#F7F3EE; --card:#FFFFFF; --alt:#EDE7DF; --soft:#F5E6D5;
+  --ink:#14314F; --muted:#6B6560; --rule:rgba(107,101,96,.3);
+  --cognac:#C67A3C; --cognac-deep:#8B5628; --navy:#14314F; --navy-tint:#E7ECF3;
+  --panel:#14314F; --on-panel:#FFFFFF; --on-panel-muted:rgba(255,255,255,.72);
+  --mark:#C67A3C;
+  --sans:"DM Sans","Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --page:#0E2740; --card:#12304C; --alt:#0B1F35; --soft:rgba(198,122,60,.16);
+  --ink:#EDE7DF; --muted:#A6A29C; --rule:rgba(166,162,156,.3);
+  --cognac:#E09A5F; --cognac-deep:#F5E6D5; --navy:#EDE7DF; --navy-tint:rgba(247,243,238,.08);
+  --panel:#0B1F35; --on-panel:#EDE7DF; --on-panel-muted:#A6A29C; --mark:#E09A5F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --page:#0E2740; --card:#12304C; --alt:#0B1F35; --soft:rgba(198,122,60,.16);
+  --ink:#EDE7DF; --muted:#A6A29C; --rule:rgba(166,162,156,.3);
+  --cognac:#E09A5F; --cognac-deep:#F5E6D5; --navy:#EDE7DF; --navy-tint:rgba(247,243,238,.08);
+  --panel:#0B1F35; --on-panel:#EDE7DF; --on-panel-muted:#A6A29C; --mark:#E09A5F; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;
+  padding-block:clamp(16px,4vw,48px);padding-inline:16px}
+.wrap{max-width:940px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(20px,3vw,28px)}
+code,.path{font-family:var(--mono);font-size:.88em;overflow-wrap:anywhere}
+h1,h2,h3{font-weight:700;letter-spacing:-.02em;text-wrap:balance;margin:0;color:var(--ink)}
+
+/* header: mark + product lockup, hairline, date */
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px;
+  padding-bottom:16px;border-bottom:1px solid var(--rule)}
+.lockup{display:flex;align-items:center;gap:12px;color:var(--ink);font-weight:500}
+.lockup svg{width:36px;height:36px;color:var(--mark);flex:0 0 auto}
+.lockup .bar{width:1px;height:26px;background:var(--rule)}
+.when{font-size:14px;color:var(--muted)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(20px,4vw,44px);align-items:center}
+.big{background:var(--soft);border-left:4px solid var(--cognac);padding:18px 26px;min-width:0}
+.big .n{display:block;font-size:clamp(64px,13vw,112px);font-weight:700;line-height:1;letter-spacing:-.03em;
+  color:var(--cognac-deep);font-variant-numeric:tabular-nums}
+.big .c{display:block;font-size:14px;color:var(--muted);margin-top:8px;max-width:22ch}
+.eyebrow{font-size:13px;font-weight:500;color:var(--cognac);letter-spacing:.04em;margin:0 0 6px}
+.hero h1{font-size:clamp(24px,3.6vw,34px);line-height:1.2}
+.hero .fix1{margin:10px 0 0;font-weight:500;color:var(--ink)}
+.hero .how{margin:12px 0 0;color:var(--muted);font-size:15px;max-width:65ch}
+
+/* counts */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.tile{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:16px}
+.tile .k{display:block;font-size:13px;color:var(--muted)}
+.tile .v{display:block;font-size:clamp(26px,4vw,32px);font-weight:700;line-height:1.2;margin-top:4px;font-variant-numeric:tabular-nums}
+.tile .v.attn{color:var(--cognac-deep)}
+.tile .n{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+
+/* fixes panel: the one filled Deep Navy panel on the page */
+.fixes{background:var(--panel);color:var(--on-panel);border-radius:12px;padding:clamp(20px,3.5vw,32px)}
+.fixes h2{color:var(--on-panel);font-size:20px}
+.fixes ol{margin:16px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:16px}
+.fixes li::marker{color:var(--cognac);font-weight:700}
+.fixes b{font-weight:700}
+.fixes .why{display:block;color:var(--on-panel-muted);font-size:15px;margin-top:2px}
+.fixes .path{display:block;color:var(--on-panel-muted);font-size:13px;margin-top:4px}
+
+/* layer cards */
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:clamp(18px,3vw,28px);min-width:0}
+.card h2{font-size:20px}
+.card .lede{color:var(--muted);font-size:15px;margin:6px 0 0;max-width:68ch}
+.card ol,.card ul{margin:14px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:9px;max-width:72ch}
+.card li::marker{color:var(--cognac)}
+.card q{font-style:italic}
+.tw{overflow-x:auto;margin-top:14px}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+thead th{font-size:13px;font-weight:500;color:var(--muted);border-bottom:1.5px solid var(--ink)}
+.chip{display:inline-block;font-size:13px;font-weight:500;padding:2px 10px;border-radius:999px;white-space:nowrap}
+.chip.ok{background:var(--navy-tint);color:var(--navy)}
+.chip.attn{background:var(--soft);color:var(--cognac-deep)}
+.unseen{background:var(--alt);border-radius:12px;padding:clamp(18px,3vw,28px)}
+.unseen h2{font-size:20px}
+.unseen ul{margin:12px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:6px;color:var(--ink)}
+
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding-top:16px;
+  border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
+footer .sig{color:var(--cognac-deep);font-weight:500}
+a{color:var(--navy)}a:hover{color:var(--cognac)}
+:focus-visible{outline:2px solid var(--cognac);outline-offset:3px}
+@media (max-width:640px){.hero{grid-template-columns:1fr}}
+</style>
+<div class="wrap">
+
+  <header class="top">
+    <div class="lockup">
+      <svg viewBox="0 0 120 120" fill="none" aria-label="vL"><g stroke="currentColor" stroke-width="9" stroke-linejoin="miter" stroke-linecap="butt"><rect x="12" y="12" width="96" height="96"/><path d="M27 52 L42 86 L57 52"/><path d="M69 34 L69 86 L92 86"/></g></svg>
+      <span class="bar"></span><span>AI the vL Way</span>
+    </div>
+    <span class="when">Shakedown &middot; {{DATE}}, {{TIME}} MT &middot; the target was not changed</span>
+  </header>
+
+  <section class="hero">
+    <div class="big"><span class="n">{{THE 1 NUMBER THAT MATTERS MOST}}</span><span class="c">{{WHAT THAT NUMBER COUNTS}}</span></div>
+    <div>
+      <p class="eyebrow">{{TARGET NAME}}</p>
+      <h1>{{THE VERDICT, 1 SENTENCE}}</h1>
+      <p class="fix1">{{THE 1 FIX THAT MATTERS MOST, 1 LINE}}</p>
+      <p class="how">{{HOW THE AUDIT RAN: the 4 layers in 2 or 3 plain sentences, the job the stranger was given, and that everything ran in a throwaway copy}}</p>
+    </div>
+  </section>
+
+  <section class="tiles" aria-label="The counts">
+    <div class="tile"><span class="k">Routes that resolve</span><span class="v">{{N of M}}</span><span class="n">{{note}}</span></div>
+    <div class="tile"><span class="k">Guards proven</span><span class="v">{{N of M}}</span><span class="n">{{note}}</span></div>
+    <div class="tile"><span class="k">Stranger's job</span><span class="v">{{done / partly / no}}</span><span class="n">{{N stuck points}}</span></div>
+    <div class="tile"><span class="k">Claims still true</span><span class="v">{{N of M}}</span><span class="n">{{note}}</span></div>
+    <div class="tile"><span class="k">Work at risk</span><span class="v">{{N}}</span><span class="n">{{unsaved folders, keys in files}}</span></div>
+    <div class="tile"><span class="k">Unfilled slots</span><span class="v">{{N}}</span><span class="n">{{lines outside templates}}</span></div>
+  </section>
+  <!-- Add class="attn" to a tile's .v when that count needs the owner's attention. -->
+
+  <section class="fixes">
+    <h2>The 3 fixes, ranked by what each would cost you</h2>
+    <ol>
+      <li><b>{{FIX}}</b><span class="why">{{WHY, in business words}}</span><span class="path">{{file}}:{{line}}</span></li>
+      <li><b>{{FIX}}</b><span class="why">{{WHY}}</span><span class="path">{{file}}:{{line}}</span></li>
+      <li><b>{{FIX}}</b><span class="why">{{WHY}}</span><span class="path">{{file}}:{{line}}</span></li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>Layer 1, read: what the files say</h2>
+    <ol><li>{{1 line per question, 1 to 11, each with its evidence}}</li></ol>
+  </section>
+
+  <section class="card">
+    <h2>Layer 2, run: a stranger did 1 real job</h2>
+    <p class="lede">{{the job, what came out, how many files the stranger read before knowing where to go}}</p>
+    <ul><li>{{each stuck point in the stranger's own words, with file and line}}</li></ul>
+  </section>
+
+  <section class="card">
+    <h2>Layer 3, reality: planted mistakes and claims that say done</h2>
+    <div class="tw"><table>
+      <thead><tr><th>Promise</th><th>Guard</th><th>On the mistake</th><th>On the clean case</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>{{promise}}</td><td>{{guard or none}}</td><td>{{fired / quiet}}</td><td>{{passed / fired}}</td><td><span class="chip ok">proven</span> or <span class="chip attn">missing / blind / jumpy</span></td></tr>
+      </tbody>
+    </table></div>
+    <ul><li>{{each claim checked: still true or not, with where it sits and what was checked}}</li></ul>
+  </section>
+
+  <section class="card">
+    <h2>The old audit you were doing, next to the shakedown</h2>
+    <p class="lede">The old audit reads your files and tells you what they say. The shakedown also runs the workspace and plants mistakes. Here is every finding from today, and which audit could have found it.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Today's finding</th><th>The old audit</th><th>The shakedown</th></tr></thead>
+      <tbody><tr><td>{{finding}}</td><td>{{finds this / sees the check exists / cannot see / not checked}}</td><td>{{how the shakedown found it}}</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="unseen">
+    <h2>What this audit could not see</h2>
+    <ul><li>{{always at least 1 line}}</li></ul>
+  </section>
+
+  <section class="card">
+    <h2>Since last time</h2>
+    <p class="lede">{{better, worse or same per count, or "First audit, the baseline is set."}}</p>
+  </section>
+
+  <footer>
+    <span class="sig">AI the vL Way. Less hype. More help.</span>
+    <span>Counted, not estimated. The ICM Shakedown, built on the 4R audit by RyMac (filesnfolders.com). ICM by Jake Van Clief and David McDermott, arXiv:2603.16021.</span>
+  </footer>
+
+</div>

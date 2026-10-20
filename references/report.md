@@ -1,0 +1,46 @@
+# Layer 4, REPORT
+
+2 outputs, every time:
+
+1. **The record**, `templates/record.md`, saved in the results home as
+   `<target-name>-<YYYY-MM-DD>.md`. If a record for this target already exists from an
+   earlier date, keep that file and start the new 1 with the change since then.
+   **Never write over a record.** A second audit on the same day saves as
+   `<target-name>-<YYYY-MM-DD>-2.md`, a third as `-3`, and so on. The newest record is the
+   "last time" for the next audit.
+2. **The page**, `templates/report.html` with every `{{slot}}` filled.
+   The page is always AI the vL Way branded: keep the template's palette, DM Sans, the vL mark
+   lockup and the closing signature "AI the vL Way. Less hype. More help." Brand source of truth:
+   `Jeff-HQ/90 Jeff Standards/brand-ai-the-vl-way.md`. Title the page `<target name> shakedown`.
+   Mark a count that needs the owner with `class="attn"`; results use `chip ok` (proven, still
+   true) or `chip attn` (missing, blind, jumpy, not true). No em dashes in the copy. In Claude Code with
+   Artifacts, publish the page. Anywhere else, save the page beside the record.
+
+## The order the owner reads, top to bottom
+
+1. **The verdict, 1 sentence.** What works, what does not, in plain words.
+2. **The counts.** Only numbers that were counted: routes that resolve out of routes named,
+   guards proven out of guards tested, places the stranger got stuck, keys found, folders
+   unsaved, claims still true out of claims checked.
+3. **The 3 fixes, ranked by what each would cost the owner if left alone.** Each fix says
+   what to change, the file and line, and why the fix matters in business words: a lost
+   customer, lost work, a wrong price, time.
+4. **Layer by layer:** what Read found, what Run found (with the stranger's own words for
+   each stuck point), what Reality proved (the guard table).
+5. **What the audit could not see.** Always present. An empty section is a claim that the
+   audit saw everything, and no audit does.
+6. **The old audit you were doing, next to the shakedown.** 1 row per finding from today:
+   could an audit that only reads files have found it (finds this, sees the check exists but
+   not that the check works, cannot see, not checked), and how the shakedown found it. Name
+   no person and no product. The old audit is "the old audit you were doing".
+7. **Since last time**, when an earlier record exists: better, worse, same, per count.
+
+## Rules for the words
+
+- Plain English a 9th grader follows. Any technical word gets explained in the same
+  sentence, the way you would to a smart friend who has never coded.
+- Numbers as digits.
+- A finding without a file and line, or a command and its output, does not go in.
+- No score out of 100, no letter grade, no traffic light that is not backed by a count.
+- End the chat summary on 1 line: "Better or worse since last time: ___, because ___." On a
+  first audit: "First audit, the baseline is set."
