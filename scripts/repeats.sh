@@ -31,7 +31,11 @@ out="$(mktemp)"; trap 'rm -f "$out"' EXIT
     awk -v F="$f" '
       NR==1 && /^---$/ { fm=1; next } fm && /^---$/ { fm=0; next } fm { next }
       /^[ \t]*#/ { next }   # a shared heading is a shared form, not a copied rule
-      { s = tolower($0); gsub(/[^a-z0-9 ]/, " ", s); buf = buf " " s }
+      # A pointer to 1 shared file is how a rule keeps 1 home, so links and paths are not text:
+      # drop a list line that is only a link, link targets, and backticked paths.
+      /^[ \t]*([-*]|[0-9]+\.)[ \t]*\[[^]]*\]\([^)]*\)[ \t]*$/ { next }
+      { s = $0; gsub(/\]\([^)]*\)/, "]", s); gsub(/`[^`]*`/, " ", s)
+        s = tolower(s); gsub(/[^a-z0-9 ]/, " ", s); buf = buf " " s }
       END {
         n = split(buf, w, " ")
         for (i = 1; i + 7 <= n; i++) {

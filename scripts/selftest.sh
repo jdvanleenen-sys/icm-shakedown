@@ -290,6 +290,10 @@ printf '# 02_b\n## What must never happen here at any stage of the work\nThe AI 
 printf '# 03_c\n## What must never happen here at any stage of the work\nThe AI never contacts the builder.\n' > "$RH/03_c/CONTEXT.md"
 out="$(bash "$HERE/repeats.sh" "$RH" 2>&1)"; rc=$?
 expect_exit "repeats quiet when 3 files share only a heading" "$rc" 0
+RL="$W/repeat-links"; mkdir -p "$RL/01_a" "$RL/02_b" "$RL/03_c"
+for d in 01_a 02_b 03_c; do printf '# %s\nShared rules:\n- [approval-and-delegation](../_shared/approval-and-delegation.md)\n- [generation-and-retries](../_shared/generation-and-retries.md)\nRead `../_shared/approval-and-delegation.md` and `../_shared/generation-and-retries.md` first.\nThis step does its own job, %s.\n' "$d" "$d" > "$RL/$d/CONTEXT.md"; done
+out="$(bash "$HERE/repeats.sh" "$RL" 2>&1)"; rc=$?
+expect_exit "repeats quiet when 3 files only point to the same shared files" "$rc" 0
 
 mkdir -p "$C/runs/s1"
 printf -- '---\nstatus: approved\nverdict: accepted\n---\n# Render\n1. Hair: holds\n## Yes\n- Answer: yes\n- Name: Dana\n- Date: 2026-10-19\n' > "$C/runs/s1/render.md"

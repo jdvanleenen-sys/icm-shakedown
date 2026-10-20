@@ -14,7 +14,8 @@ Credit to RyMac is kept in SKILL.md, the README and the footer of every report.
 - `load.sh` (question 10): rough tokens each stage makes the agent read (entry + contract + named
   text files); flags any stage over 8,000.
 - `repeats.sh` (question 11): the same 8-word passage in 3 or more instruction files (headings
-  ignored), so each rule has 1 home.
+  ignored, and links or paths to a shared file ignored: a pointer is how a rule keeps 1
+  home), so each rule has 1 home.
 
 ## Layer 3
 - `claims.sh`: files that say done (`status: approved`, `verdict: accepted`) while their own body
@@ -42,7 +43,7 @@ Credit to RyMac is kept in SKILL.md, the README and the footer of every report.
   starting a helper program for every path.
 
 ## Proof
-`bash scripts/selftest.sh` plants a mistake and a clean case for every script: 85 of 85 hold.
+`bash scripts/selftest.sh` plants a mistake and a clean case for every script: 86 of 86 hold.
 Every new check was also run on 3 real ICM workspaces before release (including an umbrella with
 about 70 child workspaces); each finding was read by hand and the false alarms were fixed.
 
