@@ -52,7 +52,7 @@ Credit to RyMac is kept in SKILL.md, the README and the footer of every report.
   starting a helper program for every path.
 
 ## Proof
-`bash scripts/selftest.sh` plants a mistake and a clean case for every script: 97 of 97 hold.
+`bash scripts/selftest.sh` plants a mistake and a clean case for every script: 98 of 98 hold.
 Every new check was also run on 3 real ICM workspaces before release (including an umbrella with
 about 70 child workspaces); each finding was read by hand and the false alarms were fixed.
 

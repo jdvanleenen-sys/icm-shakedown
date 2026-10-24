@@ -238,6 +238,7 @@ out="$(HOME="$JH" bash "$HERE/jobs.sh" "$J" 2>&1)"; rc=$?
 expect_exit "jobs fires on a routing row whose place is gone" "$rc" 1
 expect_has  "jobs lists the dead row as missing" "$out" "missing entry   10 Rooms/gone.md"
 expect_has  "jobs lists a room table row from the room's folder" "$out" "ok      room    10 Rooms/docs/a.md"
+expect_has  "jobs words a path-first row by its description, not the answer" "$out" "10 Rooms/docs/a.md  <-  the first doc"
 expect_has  "jobs lists a job named only outside the workspace" "$out" "ok      outside 90 Rules/play/code-rules.md  <-  Apply the code rules"
 expect_has  "jobs flags an outside pointer that names the workspace and is gone" "$out" "missing outside 90 Rules/ideas.md"
 expect_not  "jobs leaves a skill's own folder alone" "$out" "_archive/old.md"

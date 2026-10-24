@@ -51,6 +51,10 @@ table_rows() {  # $1 = file relative to the target, $2 = source word, $3 = the f
   awk -v src="$2" -v dir="$3" -v file="$1" '
     function emit(row, ln,    c, words, n, parts, i, p, path) {
       split(row, c, "|"); words = c[2]
+      # A first cell that is only paths (| `finance/` | what it holds |) names the answer, not
+      # the job: the job words are the next cell.
+      first = c[2]; gsub(/`[^`]*`|[[:space:]·,]|\*/, "", first)
+      if (first == "" && c[3] != "") words = c[3]
       gsub(/\*|`/, "", words); gsub(/^[[:space:]]+|[[:space:]]+$/, "", words)
       if (words == "") return
       n = split(row, parts, "`"); path = ""
