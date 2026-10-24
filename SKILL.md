@@ -1,6 +1,6 @@
 ---
 name: icm-shakedown
-description: Runs the ICM Shakedown (Read, Run, Reality, Report) on an ICM workspace or any folder system an AI works from. Reads the structure, has a fresh agent with no memory do 1 real job in a throwaway copy, plants real mistakes to prove the guards catch them, and writes a plain English report with ranked fixes and file and line evidence. Use when the user says "shakedown", "run a shakedown", "shake down my ICM", "audit my ICM", "audit this ICM", "run the audit", "audit day", "is my workspace drifting", "am I drifting", or asks whether a folder system, an agent folder, or an ICM workspace actually works. Make sure to use this skill whenever someone doubts their ICM setup or asks for an audit of one.
+description: Runs the ICM Shakedown (Read, Run, Reality, Report) on an ICM workspace or any folder system an AI works from. Reads the structure, has fresh agents with no memory find where every job starts and run 2 jobs end to end in a throwaway copy, plants real mistakes to prove the guards catch them, and writes a plain English report with ranked fixes and file and line evidence. Use when the user says "shakedown", "run a shakedown", "shake down my ICM", "audit my ICM", "audit this ICM", "run the audit", "audit day", "is my workspace drifting", "am I drifting", or asks whether a folder system, an agent folder, or an ICM workspace actually works. Make sure to use this skill whenever someone doubts their ICM setup or asks for an audit of one.
 argument-hint: [target folder · blank = the workspace this session is in]
 ---
 
@@ -11,7 +11,7 @@ what it DOES. This audit does both, then proves the guards catch what they claim
 
 Supporting files, read each 1 when its layer starts:
 - `references/read.md`: layer 1, the 11 questions and the script behind each
-- `references/run.md`: layer 2, the cold walk and the prompt for the fresh agent
+- `references/run.md`: layer 2, the route walk for every job, the 2 full runs, and their prompts
 - `references/reality.md`: layer 3, planting mistakes and checking the claims that say done
 - `references/report.md`: layer 4, the shape of the report and the record
 - `templates/report.html`: the report page, always AI the vL Way branded (Jeff's brand). Fill the
@@ -21,7 +21,7 @@ Supporting files, read each 1 when its layer starts:
 Scripts, run them, do not read them: `scripts/routes.sh`, `scripts/nested-repos.sh`,
 `scripts/secrets.sh`, `scripts/placeholders.sh`, `scripts/guards.sh`,
 `scripts/status-drift.sh`, `scripts/structure.sh`, `scripts/load.sh`, `scripts/repeats.sh`,
-`scripts/claims.sh`, `scripts/copy-target.sh`, `scripts/umbrella.sh`. `scripts/selftest.sh` proves every script on planted cases.
+`scripts/claims.sh`, `scripts/copy-target.sh`, `scripts/umbrella.sh`, `scripts/jobs.sh`. `scripts/selftest.sh` proves every script on planted cases.
 Run it first on a new machine.
 
 ## The 3 promises this audit keeps
@@ -58,10 +58,13 @@ Run it first on a new machine.
 
 - [ ] **1. READ.** Answer the 11 questions in `references/read.md`. 10 of them have a script.
       Run the scripts, never answer those 10 by reading alone.
-- [ ] **2. RUN.** Pick 1 real job the workspace exists to do. Hand the scratch copy and the
-      job to a fresh agent with the prompt in `references/run.md`. Record whether the job got
-      done, how many files the agent read before knowing where to go, and every place the
-      agent got stuck, each with file and line.
+- [ ] **2. RUN.** Route every job, run 2, with the prompts in `references/run.md`. List every
+      job with `scripts/jobs.sh` (routing rows, plus paths the owner's global instructions and
+      skills name), have a fresh agent find where each starts, and check its landings with
+      `scripts/jobs.sh --check`. Then run 2 jobs end to end, each by its own fresh agent: the
+      job the owner does most and the next job in the rotation. Record jobs routed, and for
+      each full run whether the job got done, files read before knowing where to go, and
+      every stuck point with file and line.
 - [ ] **3. REALITY.** For the 3 biggest promises the workspace makes, plant 1 mistake each
       guard should catch and 1 clean case the guard should pass, in the scratch copy or on a
       copy of the guard's input. Then run `scripts/claims.sh` on the target, and check 3 claims

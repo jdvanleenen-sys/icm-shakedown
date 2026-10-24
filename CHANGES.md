@@ -17,6 +17,15 @@ Credit to RyMac is kept in SKILL.md, the README and the footer of every report.
   ignored, and links or paths to a shared file ignored: a pointer is how a rule keeps 1
   home), so each rule has 1 home.
 
+## Layer 2: route every job, run 2
+- `jobs.sh`: lists every job a stranger could be sent on (each routing row of the entry file and
+  of every top folder's router, plus every path into the workspace that the owner's global
+  instructions and skills name), and marks any whose place does not exist. With `--check`, it
+  scores a walker's landings: pass, slow, lost, wrong or stuck.
+- Layer 2 now walks the route of every job with 1 cheap agent, then runs 2 jobs end to end: the
+  most used and the next in a rotation kept in the record. 1 full run per audit missed every
+  job it never touched; a job named only in the owner's global instructions had no route at all.
+
 ## Layer 3
 - `claims.sh`: files that say done (`status: approved`, `verdict: accepted`) while their own body
   lists a drift or failure, or leaves the approval blank.
@@ -43,7 +52,7 @@ Credit to RyMac is kept in SKILL.md, the README and the footer of every report.
   starting a helper program for every path.
 
 ## Proof
-`bash scripts/selftest.sh` plants a mistake and a clean case for every script: 86 of 86 hold.
+`bash scripts/selftest.sh` plants a mistake and a clean case for every script: 97 of 97 hold.
 Every new check was also run on 3 real ICM workspaces before release (including an umbrella with
 about 70 child workspaces); each finding was read by hand and the false alarms were fixed.
 

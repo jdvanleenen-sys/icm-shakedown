@@ -20,13 +20,14 @@
 
 1. **The verdict, 1 sentence.** What works, what does not, in plain words.
 2. **The counts.** Only numbers that were counted: routes that resolve out of routes named,
-   guards proven out of guards tested, places the stranger got stuck, keys found, folders
-   unsaved, claims still true out of claims checked.
+   guards proven out of guards tested, jobs routed out of all jobs, places the full runs got
+   stuck, keys found, folders unsaved, claims still true out of claims checked.
 3. **The 3 fixes, ranked by what each would cost the owner if left alone.** Each fix says
    what to change, the file and line, and why the fix matters in business words: a lost
    customer, lost work, a wrong price, time.
-4. **Layer by layer:** what Read found, what Run found (with the stranger's own words for
-   each stuck point), what Reality proved (the guard table).
+4. **Layer by layer:** what Read found, what Run found (the route walk's misses, and the
+   stranger's own words for each stuck point in the 2 full runs), what Reality proved (the
+   guard table).
 5. **What the audit could not see.** Always present. An empty section is a claim that the
    audit saw everything, and no audit does.
 6. **The old audit you were doing, next to the shakedown.** 1 row per finding from today:

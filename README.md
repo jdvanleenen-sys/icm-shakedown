@@ -4,8 +4,8 @@
 
 Most audits read your files and tell you what the files say.
 
-The shakedown does that, then has a fresh AI with no memory do 1 real job in a copy of your
-workspace.
+The shakedown does that, then has fresh AIs with no memory find where every job starts and
+run 2 jobs end to end, in a copy of your workspace.
 
 Then the shakedown plants real mistakes to see if your guards catch them.
 
@@ -22,8 +22,11 @@ Your workspace is never changed. Not 1 byte. Everything runs in a throwaway copy
    on the map? Is anything unsaved? Are there keys sitting in files? 10 of the 11 are
    answered by a script, not an opinion. The newest 4 check the ICM shape itself: one
    status per file, a short entry file, a light read per stage, each rule in 1 place.
-2. **Run.** A fresh AI that has never seen your workspace does 1 real job, cold. The AI
-   reports every place it got stuck, with the file and line that caused it.
+2. **Run.** A fresh AI that has never seen your workspace finds where every job starts:
+   each routing row, plus every job your global instructions and skills send agents on. A
+   script checks where it landed. Then 2 jobs run end to end, cold: the 1 you do most and
+   the next in a rotation, so over time every job gets a full run. Each run reports every
+   place it got stuck, with the file and line that caused it.
 3. **Reality.** Your 3 biggest promises get tested. The audit plants a mistake each guard
    should catch and a clean case each guard should pass. Then the audit checks 3 lines
    that say "done" against the thing each 1 describes.

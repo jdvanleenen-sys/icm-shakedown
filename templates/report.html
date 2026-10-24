@@ -122,7 +122,7 @@ a{color:var(--navy)}a:hover{color:var(--cognac)}
   <section class="tiles" aria-label="The counts">
     <div class="tile"><span class="k">Routes that resolve</span><span class="v">{{N of M}}</span><span class="n">{{note}}</span></div>
     <div class="tile"><span class="k">Guards proven</span><span class="v">{{N of M}}</span><span class="n">{{note}}</span></div>
-    <div class="tile"><span class="k">Stranger's job</span><span class="v">{{done / partly / no}}</span><span class="n">{{N stuck points}}</span></div>
+    <div class="tile"><span class="k">Jobs routed</span><span class="v">{{N of M}}</span><span class="n">{{2 full runs: done / partly / no, N stuck points}}</span></div>
     <div class="tile"><span class="k">Claims still true</span><span class="v">{{N of M}}</span><span class="n">{{note}}</span></div>
     <div class="tile"><span class="k">Work at risk</span><span class="v">{{N}}</span><span class="n">{{unsaved folders, keys in files}}</span></div>
     <div class="tile"><span class="k">Unfilled slots</span><span class="v">{{N}}</span><span class="n">{{lines outside templates}}</span></div>
@@ -144,9 +144,9 @@ a{color:var(--navy)}a:hover{color:var(--cognac)}
   </section>
 
   <section class="card">
-    <h2>Layer 2, run: a stranger did 1 real job</h2>
-    <p class="lede">{{the job, what came out, how many files the stranger read before knowing where to go}}</p>
-    <ul><li>{{each stuck point in the stranger's own words, with file and line}}</li></ul>
+    <h2>Layer 2, run: every job routed, 2 run end to end</h2>
+    <p class="lede">{{how many jobs the walker found the place for, out of all; then the 2 full runs: each job, what came out, how many files read before knowing where to go}}</p>
+    <ul><li>{{each job the route walk missed, and whether the map is wrong or thin}}</li><li>{{each stuck point in the strangers' own words, with file and line}}</li></ul>
   </section>
 
   <section class="card">

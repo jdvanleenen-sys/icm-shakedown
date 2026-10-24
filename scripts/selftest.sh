@@ -226,6 +226,33 @@ expect_has  "claims flags an approval left blank" "$out" "EMPTY      runs/s1/rev
 expect_not  "claims leaves an honest drifted verdict alone" "$out" "render2.md"
 expect_not  "claims skips templates" "$out" "templates/form.md"
 
+# ---------- JOBS: every routing row and every outside pointer is a job ----------
+J="$W/jobsws"; JH="$W/jobshome"; mkdir -p "$J/10 Rooms/docs" "$J/90 Rules/play" "$JH/.claude/skills/demo"
+printf '# J\n\n| If it is about | Go to |\n|---|---|\n| The rooms | `10 Rooms/` |\n| Old notes | `10 Rooms/gone.md` |\n' > "$J/CLAUDE.md"
+printf '# Rooms\n\n| File | What |\n|---|---|\n| `docs/a.md` | the first doc |\n' > "$J/10 Rooms/CONTEXT.md"
+printf 'a\n' > "$J/10 Rooms/docs/a.md"; printf 'r\n' > "$J/90 Rules/play/code-rules.md"
+printf '# Global\n\n## Apply the code rules\nRead `90 Rules/play/code-rules.md` (full: `C:\\x\\jobsws\\90 Rules\\play\\code-rules.md`).\n\n## Log ideas\nAdd a row to `C:\\x\\jobsws\\90 Rules\\ideas.md`.\n' > "$JH/.claude/CLAUDE.md"
+printf '# Demo skill\n\n## Files\nKeep a copy in `_archive/old.md`.\n' > "$JH/.claude/skills/demo/SKILL.md"
+mkdir -p "$J/_archive"
+out="$(HOME="$JH" bash "$HERE/jobs.sh" "$J" 2>&1)"; rc=$?
+expect_exit "jobs fires on a routing row whose place is gone" "$rc" 1
+expect_has  "jobs lists the dead row as missing" "$out" "missing entry   10 Rooms/gone.md"
+expect_has  "jobs lists a room table row from the room's folder" "$out" "ok      room    10 Rooms/docs/a.md"
+expect_has  "jobs lists a job named only outside the workspace" "$out" "ok      outside 90 Rules/play/code-rules.md  <-  Apply the code rules"
+expect_has  "jobs flags an outside pointer that names the workspace and is gone" "$out" "missing outside 90 Rules/ideas.md"
+expect_not  "jobs leaves a skill's own folder alone" "$out" "_archive/old.md"
+expect_not  "jobs drops the header row" "$out" "If it is about"
+num() { printf '%s\n' "$out" | awk -v p="$1" 'index($0, p) { print $1; exit }'; }
+jr="$(num '10 Rooms  <-')"; jd="$(num '10 Rooms/docs/a.md')"; jc="$(num 'code-rules.md')"; jg="$(num 'gone.md')"; ji="$(num 'ideas.md')"
+printf '%s\t10 Rooms/\t2\n%s\t10 Rooms/docs/a.md\t4\n%s\t20 Other/code.md\t3\n%s\tnone\t9\n' "$jr" "$jd" "$jc" "$jg" > "$W/walk.tsv"
+out="$(HOME="$JH" bash "$HERE/jobs.sh" "$J" --check "$W/walk.tsv" 2>&1)"; rc=$?
+expect_exit "jobs --check fires when a job is not a pass" "$rc" 1
+expect_has  "jobs --check counts the passes" "$out" "WALK    1 of 5 jobs pass; slow 1, lost 0, wrong 1, stuck 2"
+expect_has  "jobs --check names a wrong landing" "$out" "wrong job $jc"
+printf '%s\t10 Rooms\t1\n%s\t10 Rooms/docs\t3\n%s\t90 Rules/play/code-rules.md\t3\n%s\t10 Rooms/gone.md\t2\n%s\t90 Rules\t3\n' "$jr" "$jd" "$jc" "$jg" "$ji" > "$W/walk2.tsv"
+out="$(HOME="$JH" bash "$HERE/jobs.sh" "$J" --check "$W/walk2.tsv" 2>&1)"; rc=$?
+expect_exit "jobs --check passes when every job lands in 3 reads" "$rc" 0
+
 # ---------- CLEAN ----------
 C="$W/clean"; mkdir -p "$C/docs"
 printf '# Clean\n\nRead `docs/a.md` first. Everything lives in `docs/`.\n' > "$C/CLAUDE.md"
