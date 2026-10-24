@@ -44,7 +44,7 @@ for s in "$HOME"/.claude/skills/*/SKILL.md; do [ -f "$s" ] && outside+=("$s"); d
 for f in "$@"; do [ -f "$f" ] && outside+=("$f"); done
 
 tops="$(cd "$T" && for d in */; do [ -d "$d" ] && printf '%s\n' "${d%/}"; done)"
-RAW="$(mktemp)"; LIST="$(mktemp)"; trap 'rm -f "$RAW" "$LIST"' EXIT
+RAW="$(mktemp)"; LIST="$(mktemp)"; ALT="$(mktemp)"; trap 'rm -f "$RAW" "$LIST" "$ALT"' EXIT
 
 # Table rows, header rows left out:  source TAB file:line TAB words TAB folder TAB path
 table_rows() {  # $1 = file relative to the target, $2 = source word, $3 = the file's folder
@@ -86,7 +86,11 @@ table_rows() {  # $1 = file relative to the target, $2 = source word, $3 = the f
   for o in "${outside[@]+"${outside[@]}"}"; do
     awk -v base="$BASE" -v tops="$tops" -v file="$o" '
       BEGIN { n = split(tops, t, "\n"); for (i = 1; i <= n; i++) if (t[i] != "") top[t[i]] = 1 }
-      /^#+ / { head = $0; sub(/^#+ +/, "", head) }
+      BEGIN { name = file; sub(/\/SKILL\.md$/, "", name); sub(/.*\//, "", name)
+              GENERIC = "^(inputs|outputs|steps|files|process|usage|rules|notes|check|references|overview|setup|workflow|output|input)$" }
+      /^#+ / { head = $0; sub(/^#+ +/, "", head)
+               # a bare section word ("Inputs", "Steps") is not a job: name the file it sits in
+               if (tolower(head) ~ GENERIC) head = name ": " head }
       {
         line = $0; gsub(/\\/, "/", line)
         while (match(line, /`[^`]+`/)) {
@@ -121,6 +125,15 @@ while IFS=$'\t' read -r src where words dir path; do
     case "$path" in *' '*) first="${path%%/*}"; printf '%s\n' "$tops" | grep -qxF "$first" || continue ;; esac
     place="$dir$path"
   fi
+  # "30 Work/../40 Factory" is "40 Factory": fold each folder/.. away
+  case "$place" in *..*) place="$(printf '%s' "$place" | sed -E ':a
+s#(^|/)[^/]+/\.\.(/|$)#\1#
+ta
+s#/$##')" ;; esac
+  [ -n "$place" ] || continue
+  # every place a job's words point at is a right answer for that job, even when the place
+  # itself is listed under an earlier job
+  printf '%s\t%s\n' "$words" "$place" >> "$ALT"
   case "$seen" in *"|$place|"*) continue ;; esac
   seen="$seen$place|"
   n=$((n + 1))
@@ -137,15 +150,18 @@ if [ -z "$WALK" ]; then
 fi
 
 # --check: compare each landing with the job's place
-tr -d '\r' < "$WALK" | awk -F'\t' -v list="$LIST" '
-  BEGIN { while ((getline l < list) > 0) { split(l, a, "\t"); place[a[1]] = a[4]; words[a[1]] = a[5]; order[++m] = a[1] } }
+tr -d '\r' < "$WALK" | awk -F'\t' -v list="$LIST" -v alt="$ALT" '
+  BEGIN { while ((getline l < list) > 0) { split(l, a, "\t"); place[a[1]] = a[4]; words[a[1]] = a[5]; order[++m] = a[1] }
+          while ((getline l < alt) > 0) { split(l, a, "\t"); alts[a[1]] = alts[a[1]] "\n" a[2] } }
   $1 ~ /^[0-9]+$/ { land[$1] = $2; reads[$1] = $3 }
   function norm(p) { gsub(/\\/, "/", p); sub(/^\.\//, "", p); sub(/\/$/, "", p); return tolower(p) }
+  function lands(l, p,    parent) { p = norm(p); parent = p; sub(/\/[^\/]*$/, "", parent)
+    return (l == p || index(l, p "/") == 1 || (l == parent && parent != p)) }
   END {
     for (i = 1; i <= m; i++) {
-      j = order[i]; p = norm(place[j]); l = (j in land) ? norm(land[j]) : "none"
-      parent = p; sub(/\/[^\/]*$/, "", parent)
-      hit = (l == p || index(l, p "/") == 1 || (l == parent && parent != p))
+      j = order[i]; l = (j in land) ? norm(land[j]) : "none"
+      hit = lands(l, place[j])
+      if (!hit) { k = split(alts[words[j]], al, "\n"); for (x = 2; x <= k; x++) if (lands(l, al[x])) { hit = 1; break } }
       if (l == "none" || l == "") w = "stuck"
       else if (!hit) w = "wrong"
       else if (reads[j] + 0 <= 3) w = "pass"

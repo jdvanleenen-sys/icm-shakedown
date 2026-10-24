@@ -253,6 +253,20 @@ expect_has  "jobs --check names a wrong landing" "$out" "wrong job $jc"
 printf '%s\t10 Rooms\t1\n%s\t10 Rooms/docs\t3\n%s\t90 Rules/play/code-rules.md\t3\n%s\t10 Rooms/gone.md\t2\n%s\t90 Rules\t3\n' "$jr" "$jd" "$jc" "$jg" "$ji" > "$W/walk2.tsv"
 out="$(HOME="$JH" bash "$HERE/jobs.sh" "$J" --check "$W/walk2.tsv" 2>&1)"; rc=$?
 expect_exit "jobs --check passes when every job lands in 3 reads" "$rc" 0
+# A room that routes with ../, a heading that names 2 places, and a bare section heading
+J2="$W/jobsws2"; JH2="$W/jobshome2"; mkdir -p "$J2/30 Work" "$J2/40 Make/a" "$J2/40 Make/b" "$JH2/.claude/skills/kit"
+printf '# J2\n\n| For | Go to |\n|---|---|\n| Work | `30 Work/` |\n| Making | `40 Make/` |\n' > "$J2/CLAUDE.md"
+printf '# Work\n\n| For | Go to |\n|---|---|\n| A thing I am making | `../40 Make/` |\n' > "$J2/30 Work/CONTEXT.md"
+printf 'x\n' > "$J2/40 Make/a/rules.md"; printf 'y\n' > "$J2/40 Make/b/plan.md"
+printf '# Global\n\n## Apply the build rules\nRead `40 Make/a/rules.md` and `40 Make/b/plan.md`.\n' > "$JH2/.claude/CLAUDE.md"
+printf '# Kit\n\n## Inputs\nUse `40 Make/a/`.\n' > "$JH2/.claude/skills/kit/SKILL.md"
+out="$(HOME="$JH2" bash "$HERE/jobs.sh" "$J2" 2>&1)"
+expect_not  "jobs folds ../ so a room's route to a sibling is the same place" "$out" "30 Work/../"
+expect_has  "jobs names a bare section heading by its file" "$out" "kit: Inputs"
+nb="$(printf '%s\n' "$out" | awk 'index($0, "40 Make/b/plan.md  <-  Apply the build rules") { print $1; exit }')"
+printf '%s\t40 Make/a/rules.md\t2\n' "$nb" > "$W/walk3.tsv"
+out="$(HOME="$JH2" bash "$HERE/jobs.sh" "$J2" --check "$W/walk3.tsv" 2>&1)"
+expect_not  "jobs --check accepts any place the job's heading names" "$out" "wrong job $nb"
 
 # ---------- CLEAN ----------
 C="$W/clean"; mkdir -p "$C/docs"
