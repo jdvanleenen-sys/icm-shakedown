@@ -13,7 +13,7 @@ wrong route is where most stuck points start.
 
 ### List the jobs
 
-`bash scripts/jobs.sh <scratch copy> > <scratch>/jobs.txt`
+`bash scripts/jobs.sh <target> > <scratch>/jobs.txt`
 
 The list holds every row of the entry file's tables, every row of each top folder's own
 router, and every path into the workspace that the owner's global instructions and skills
@@ -21,8 +21,10 @@ name. That last kind matters most: those are the jobs other agents will be sent 
 routing table may name them. A job marked `missing` is already a finding: the map sends work
 to nothing.
 
-Run it on the scratch copy, so the walker and the check see the same files. The outside
-files (global instructions, skills) are read where they live; they are not changed.
+Run it on the target itself: it only reads. On the scratch copy it would lose the jobs whose
+outside paths name the target by its folder name, and call empty folders missing (the copy
+holds files, not empty folders). The outside files (global instructions, skills) are read
+where they live; nothing is changed. The walker still walks the scratch copy.
 
 ### Hand the walk over
 
@@ -57,7 +59,7 @@ The jobs:
 ### Check the walk
 
 Save the walker's lines to `<scratch>/walk.tsv`, then:
-`bash scripts/jobs.sh <scratch copy> --check <scratch>/walk.tsv`
+`bash scripts/jobs.sh <target> --check <scratch>/walk.tsv`
 
 Each job gets 1 word: `pass` (the place, in 3 reads or fewer), `slow` (4 or 5), `lost` (more
 than 5), `wrong` (landed elsewhere), `stuck` (no answer). Every job that is not a pass is a
