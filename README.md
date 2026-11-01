@@ -39,13 +39,20 @@ No made up score out of 100. Only numbers that were counted.
 
 ## Install the ICM Shakedown
 
+**Got the zip?** Open `START-HERE.md` inside it. It walks you through install, a first run on
+the Summit Coat demo, and how to check the report.
+
+From GitHub:
+
 1. Put this repo in your Claude Code skills folder as a folder named `icm-shakedown`:
    - Mac or Linux: `git clone https://github.com/jdvanleenen-sys/icm-shakedown ~/.claude/skills/icm-shakedown`
    - Windows (Git Bash): `git clone https://github.com/jdvanleenen-sys/icm-shakedown ~/.claude/skills/icm-shakedown`
    - No git: use **Code, Download ZIP** on GitHub, unzip, and rename the folder to `icm-shakedown`
      inside `skills` (`C:\Users\YOUR-NAME\.claude\skills\` on Windows).
-3. Restart Claude Code.
-4. Open Claude Code in the folder you want audited and type:
+2. Restart Claude Code.
+3. Try it on the demo first: **"shake down the Summit Coat demo"**. The answers are in
+   `demo/ANSWERS.md`; read them after the report.
+4. Then open Claude Code in the folder you want audited and type:
 
 **"shake down my ICM"**
 
@@ -56,7 +63,7 @@ second folder inside `skills`.
 
 ## What you need
 
-- Claude Code
+- Claude Code, which comes with every paid Claude plan (not the free plan)
 - bash, which Mac and Linux already have. On Windows, bash comes with Git for Windows.
 - git and python make 2 of the checks sharper. The audit still runs without them.
 
@@ -69,7 +76,7 @@ you install:
 
 The self-test builds a workspace full of planted mistakes and a clean workspace, then checks
 that every script catches the mistakes and stays quiet on the clean 1. You want to see
-every line held (`86 of 86 held` on this version).
+every line held (`116 of 116 held` on this version).
 
 ## Umbrella ICMs
 

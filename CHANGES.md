@@ -51,10 +51,25 @@ Credit to RyMac is kept in SKILL.md, the README and the footer of every report.
 - About 4 times faster on Windows: the per-path checks use bash's own matching instead of
   starting a helper program for every path.
 
+## Release 1: one zip a stranger can install (2026-11-01)
+- `START-HERE.md`: install, a first run, and how to check the report, in plain words.
+- `demo/summit-coat/`: a made-up painting company with 8 planted problems, and
+  `demo/ANSWERS.md` beside it (outside the audit's reach) to check the report against.
+- `copy-target.sh --check`: the copy saves a checksum list beside itself; before the report,
+  the check names every file changed, new or gone in the target since the copy. Found on a
+  real audit, where the owner's other chat edited 15 files mid-run and a full run worked from
+  the old versions.
+- `jobs.sh`: a route that leaves the workspace on purpose (`../../other-venture/`) is marked
+  `outside`, not `missing`; the `../` fold no longer treats `..` as a folder name. A table
+  keyed by a number (`| 7 | Build Anything |`) words the job as "7 Build Anything", not "7".
+- `placeholders.sh`: `[YOUR ...]` slots were never counted, because `awk -v` stripped the
+  backslashes in the pattern. Found by the demo.
+- Removed the paths that only resolved on the author's machine.
+
 ## Proof
-`bash scripts/selftest.sh` plants a mistake and a clean case for every script: 101 of 101 hold.
+`bash scripts/selftest.sh` plants a mistake and a clean case for every script: 116 of 116 hold.
 Every new check was also run on 3 real ICM workspaces before release (including an umbrella with
 about 70 child workspaces); each finding was read by hand and the false alarms were fixed.
 
-The report page uses the AI the vL Way look; the original look is kept as
-`templates/report-rymac.html.orig`.
+The report page uses the AI the vL Way look. The original RyMac look stays in the GitHub repo
+as `templates/report-rymac.html.orig`; the zip leaves it out.
