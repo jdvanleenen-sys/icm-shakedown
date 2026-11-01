@@ -138,6 +138,22 @@ printf 'a
 out="$(bash "$HERE/copy-target.sh" "$CT" "$CD" 2>&1)"; rc=$?
 expect_exit "copy-target fires when a file does not land" "$rc" 1
 expect_has  "copy-target names the missing file" "$out" "MISSING docs/b.md"
+# copy-target --check: the target changed after the copy was made
+FT="$W/ft-target"; FD="$W/ft-scratch"; mkdir -p "$FT/docs"
+printf 'one\n' > "$FT/docs/a.md"; printf 'two\n' > "$FT/docs/b.md"; printf 'three\n' > "$FT/docs/c d.md"
+bash "$HERE/copy-target.sh" "$FT" "$FD" >/dev/null 2>&1
+out="$(bash "$HERE/copy-target.sh" --check "$FT" "$FD" 2>&1)"; rc=$?
+expect_exit "copy-target --check quiet while the target is unchanged" "$rc" 0
+[ -f "$FD/.copy-manifest" ] && bad "copy-target put its manifest inside the copy" || ok "copy-target keeps its manifest out of the copy"
+printf 'one, edited\n' > "$FT/docs/a.md"; rm "$FT/docs/b.md"; printf 'new\n' > "$FT/docs/e.md"; printf 'three, edited\n' > "$FT/docs/c d.md"
+out="$(bash "$HERE/copy-target.sh" --check "$FT" "$FD" 2>&1)"; rc=$?
+expect_exit "copy-target --check fires when the target changed after the copy" "$rc" 1
+expect_has  "copy-target --check names a changed file" "$out" "changed docs/a.md"
+expect_has  "copy-target --check names a changed file with a space" "$out" "changed docs/c d.md"
+expect_has  "copy-target --check names a new file" "$out" "new     docs/e.md"
+expect_has  "copy-target --check names a removed file" "$out" "gone    docs/b.md"
+out="$(bash "$HERE/copy-target.sh" --check "$FT" "$W/no-such-copy" 2>&1)"; rc=$?
+expect_exit "copy-target --check refuses a copy it has no record of" "$rc" 2
 
 # structure: an entry file that holds content, twins that drifted, a case clash, a thin contract
 SB="$W/shape-bad"; mkdir -p "$SB/01_draft"

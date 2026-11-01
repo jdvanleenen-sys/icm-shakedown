@@ -9,12 +9,12 @@
    `<target-name>-<YYYY-MM-DD>-2.md`, a third as `-3`, and so on. The newest record is the
    "last time" for the next audit.
 2. **The page**, `templates/report.html` with every `{{slot}}` filled.
-   The page is always AI the vL Way branded: keep the template's palette, DM Sans, the vL mark
-   lockup and the closing signature "AI the vL Way. Less hype. More help." Brand source of truth:
-   `Jeff-HQ/90 Jeff Standards/brand-ai-the-vl-way.md`. Title the page `<target name> shakedown`.
+   Keep the template's look as it is: its palette, DM Sans, the vL mark lockup and the closing
+   signature "AI the vL Way. Less hype. More help." Title the page `<target name> shakedown`.
    Mark a count that needs the owner with `class="attn"`; results use `chip ok` (proven, still
-   true) or `chip attn` (missing, blind, jumpy, not true). No em dashes in the copy. In Claude Code with
-   Artifacts, publish the page. Anywhere else, save the page beside the record.
+   true) or `chip attn` (missing, blind, jumpy, not true). No em dashes in the copy. Save the page
+   beside the record and tell the owner its full path, so they can open it in a browser. Put it
+   anywhere online only if the owner asks: the page names their files.
 
 ## The order the owner reads, top to bottom
 

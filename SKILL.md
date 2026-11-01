@@ -14,15 +14,16 @@ Supporting files, read each 1 when its layer starts:
 - `references/run.md`: layer 2, the route walk for every job, the 2 full runs, and their prompts
 - `references/reality.md`: layer 3, planting mistakes and checking the claims that say done
 - `references/report.md`: layer 4, the shape of the report and the record
-- `templates/report.html`: the report page, always AI the vL Way branded (Jeff's brand). Fill the
-  slots; never swap in another look. The original RyMac look is kept only as `report-rymac.html.orig`
+- `templates/report.html`: the report page, in the AI the vL Way look. Fill the slots and keep
+  the look as it is: everything the page needs is inside the template
 - `templates/record.md`: the record kept in the results home
 
 Scripts, run them, do not read them: `scripts/routes.sh`, `scripts/nested-repos.sh`,
 `scripts/secrets.sh`, `scripts/placeholders.sh`, `scripts/guards.sh`,
 `scripts/status-drift.sh`, `scripts/structure.sh`, `scripts/load.sh`, `scripts/repeats.sh`,
-`scripts/claims.sh`, `scripts/copy-target.sh`, `scripts/umbrella.sh`, `scripts/jobs.sh`. `scripts/selftest.sh` proves every script on planted cases.
-Run it first on a new machine.
+`scripts/claims.sh`, `scripts/copy-target.sh`, `scripts/umbrella.sh`, `scripts/jobs.sh`.
+`scripts/selftest.sh` proves every script on planted cases. Run it first on a new machine.
+`demo/summit-coat/` is a made-up workspace with planted problems, for a first run.
 
 ## The 3 promises this audit keeps
 
@@ -49,7 +50,8 @@ Run it first on a new machine.
 3. **Scratch copy:** `bash scripts/copy-target.sh <target> <scratch>` into the session's
    temp or scratch folder. Layers 2 and 3 only ever touch the scratch copy. If it exits 1,
    the copy is incomplete: stop, fix the copy (a shorter scratch path usually does it), and
-   never report a missing file as the owner's fault.
+   never report a missing file as the owner's fault. The copy saves a checksum list beside
+   itself (`<scratch>.manifest`), so layer 4 can tell whether the target changed meanwhile.
 4. **Last audit:** if the results home holds an earlier record for this target, read the
    record. Records from before the rename may sit in a `4r-audits/` folder beside the target;
    read the newest of those too. The change since last time is the headline of the report.
@@ -69,9 +71,13 @@ Run it first on a new machine.
       guard should catch and 1 clean case the guard should pass, in the scratch copy or on a
       copy of the guard's input. Then run `scripts/claims.sh` on the target, and check 3 claims
       that say done, live, or approved against the thing each claim describes. `references/reality.md` has the method.
-- [ ] **4. REPORT.** Write the record into the results home with `templates/record.md`, then
-      the page with `templates/report.html` (AI the vL Way branding, every time). The 3 fixes are ranked by what each 1 would
-      have cost the owner. Say plainly what the audit could not see.
+- [ ] **4. REPORT.** First run `bash scripts/copy-target.sh --check <target> <scratch>`. If it
+      says STALE, the owner or another chat edited the workspace while the audit ran: name the
+      changed files under "could not see", and if a full run's own files changed, copy again and
+      rerun that job, so no fix is reported for a thing already fixed. Then write the record
+      into the results home with `templates/record.md`, and the page with
+      `templates/report.html`. The 3 fixes are ranked by what each 1 would have cost the owner.
+      Say plainly what the audit could not see.
 
 ## Rules
 
@@ -96,4 +102,5 @@ promises are his.
 2 ideas in layer 1 come from Jake's own ICM audit, written fresh in these words: a rule that
 lives only in a sentence, and an example that breaks the rule printed beside it.
 Questions 9 to 11 (shape, read load, one home per rule) check the ICM method's own invariants
-as the icm-architect skill states them; added by Jeff on 2026-10-19, with question 8's script.
+as the icm-architect skill states them; added by Jeff Van Leenen on 2026-10-19, with question 8's
+script.
