@@ -267,6 +267,19 @@ nb="$(printf '%s\n' "$out" | awk 'index($0, "40 Make/b/plan.md  <-  Apply the bu
 printf '%s\t40 Make/a/rules.md\t2\n' "$nb" > "$W/walk3.tsv"
 out="$(HOME="$JH2" bash "$HERE/jobs.sh" "$J2" --check "$W/walk3.tsv" 2>&1)"
 expect_not  "jobs --check accepts any place the job's heading names" "$out" "wrong job $nb"
+# A route that leaves the workspace on purpose, and a table keyed by a number
+J3="$W/jobs3/ws"; JH3="$W/jobshome3"; mkdir -p "$J3/_parked" "$J3/courses/07-build" "$W/jobs3/other-venture" "$JH3"
+printf '# J3\n\n| # | Course | Where |\n|---|---|---|\n| 7 | Build Anything | `courses/07-build/` |\n' > "$J3/CLAUDE.md"
+printf '# Parked\n\n| Track | Source |\n|---|---|\n| Find your idea | `../../other-venture/` |\n| Old track | `../../gone-venture/` |\n' > "$J3/_parked/CONTEXT.md"
+out="$(HOME="$JH3" bash "$HERE/jobs.sh" "$J3" 2>&1)"; rc=$?
+expect_has  "jobs words a number-keyed row by the number and its name" "$out" "courses/07-build  <-  7 Build Anything"
+expect_has  "jobs marks a route that leaves the workspace as outside, not missing" "$out" "outside room    ../other-venture  <-  Find your idea"
+expect_has  "jobs still flags an outside route that is gone" "$out" "missing room    ../gone-venture"
+expect_has  "jobs counts outside routes apart" "$out" "1 that leave the workspace"
+no="$(printf '%s\n' "$out" | awk 'index($0, "../other-venture") { print $1; exit }')"
+printf '%s\t_parked/CONTEXT.md\t2\n' "$no" > "$W/walk4.tsv"
+out="$(HOME="$JH3" bash "$HERE/jobs.sh" "$J3" --check "$W/walk4.tsv" 2>&1)"
+expect_not  "jobs --check passes a walker who stops at the row that leaves the workspace" "$out" "wrong job $no"
 
 # ---------- CLEAN ----------
 C="$W/clean"; mkdir -p "$C/docs"

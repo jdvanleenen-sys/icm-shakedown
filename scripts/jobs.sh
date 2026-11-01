@@ -22,6 +22,8 @@
 #   lost   landed on the place in more than 5 reads
 #   wrong  landed somewhere else
 #   stuck  did not land, or no answer
+# A place outside the target (a route that starts ../) is marked "outside" when it exists; the
+# walker cannot reach it from a copy, so landing on the row that names it counts as the place.
 # Landing on the place, inside it, or on the folder that holds it counts as the place.
 #
 # Exit 0 = every place exists (and with --check, every job is a pass). Exit 1 = at least 1
@@ -55,6 +57,11 @@ table_rows() {  # $1 = file relative to the target, $2 = source word, $3 = the f
       # the job: the job words are the next cell.
       first = c[2]; gsub(/`[^`]*`|[[:space:]·,]|\*/, "", first)
       if (first == "" && c[3] != "") words = c[3]
+      # A first cell that is only a number (| 7 | Build Anything |) is a key, not a job: keep it
+      # and add the name beside it.
+      key = c[2]; gsub(/[[:space:]*]/, "", key)
+      name = c[3]; gsub(/^[[:space:]]+/, "", name)
+      if (key ~ /^[0-9][0-9.]*$/ && name != "") words = key " " name
       gsub(/\*|`/, "", words); gsub(/^[[:space:]]+|[[:space:]]+$/, "", words)
       if (words == "") return
       n = split(row, parts, "`"); path = ""
@@ -113,7 +120,7 @@ table_rows() {  # $1 = file relative to the target, $2 = source word, $3 = the f
 # outside path that only starts with a top folder's name ("+", like `_templates/x`) and does
 # not exist may be the outside file's own folder, so it is dropped too; one that names the
 # target itself ("-") and does not exist is a missing place.
-missing=0; seen="|"; n=0
+missing=0; leaving=0; seen="|"; n=0
 while IFS=$'\t' read -r src where words dir path; do
   guess=0; [ "$dir" = "+" ] && guess=1
   case "$dir" in -|+) dir="" ;; esac
@@ -125,9 +132,10 @@ while IFS=$'\t' read -r src where words dir path; do
     case "$path" in *' '*) first="${path%%/*}"; printf '%s\n' "$tops" | grep -qxF "$first" || continue ;; esac
     place="$dir$path"
   fi
-  # "30 Work/../40 Factory" is "40 Factory": fold each folder/.. away
+  # "30 Work/../40 Factory" is "40 Factory": fold each folder/.. away. A ".." is never a
+  # folder name, so "../.." stays: what is left above the target is a route out of it.
   case "$place" in *..*) place="$(printf '%s' "$place" | sed -E ':a
-s#(^|/)[^/]+/\.\.(/|$)#\1#
+s#(^|/)([^/.][^/]*|\.[^/.][^/]*|\.\.[^/]+)/\.\.(/|$)#\1#
 ta
 s#/$##')" ;; esac
   [ -n "$place" ] || continue
@@ -138,11 +146,13 @@ s#/$##')" ;; esac
   seen="$seen$place|"
   n=$((n + 1))
   state="ok"; [ -e "$T/$place" ] || { state="missing"; missing=$((missing + 1)); }
-  printf '%s\t%s\t%s\t%s\t%s\n' "$n" "$state" "$src" "$place" "$words" >> "$LIST"
+  # a route out of the target that exists is the owner's choice, not a dead end
+  case "$place" in ..|../*) [ "$state" = ok ] && { state="outside"; leaving=$((leaving + 1)); } ;; esac
+  printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$n" "$state" "$src" "$place" "$words" "${where%:*}" >> "$LIST"
 done < "$RAW"
 
 if [ -z "$WALK" ]; then
-  echo "JOBS    $n jobs, $missing whose place does not exist"
+  echo "JOBS    $n jobs, $missing whose place does not exist, $leaving that leave the workspace"
   echo "        by source: entry $(awk -F'\t' '$3=="entry"' "$LIST" | wc -l | tr -d ' '), room $(awk -F'\t' '$3=="room"' "$LIST" | wc -l | tr -d ' '), outside $(awk -F'\t' '$3=="outside"' "$LIST" | wc -l | tr -d ' ')"
   awk -F'\t' '{ printf "  %-4s %-7s %-7s %s  <-  %s\n", $1, $2, $3, $4, $5 }' "$LIST"
   [ "$missing" -eq 0 ] && exit 0
@@ -151,7 +161,7 @@ fi
 
 # --check: compare each landing with the job's place
 tr -d '\r' < "$WALK" | awk -F'\t' -v list="$LIST" -v alt="$ALT" '
-  BEGIN { while ((getline l < list) > 0) { split(l, a, "\t"); place[a[1]] = a[4]; words[a[1]] = a[5]; order[++m] = a[1] }
+  BEGIN { while ((getline l < list) > 0) { split(l, a, "\t"); place[a[1]] = a[4]; words[a[1]] = a[5]; row[a[1]] = a[6]; order[++m] = a[1] }
           while ((getline l < alt) > 0) { split(l, a, "\t"); alts[a[1]] = alts[a[1]] "\n" a[2] } }
   $1 ~ /^[0-9]+$/ { land[$1] = $2; reads[$1] = $3 }
   function norm(p) { gsub(/\\/, "/", p); sub(/^\.\//, "", p); sub(/\/$/, "", p); return tolower(p) }
@@ -162,6 +172,8 @@ tr -d '\r' < "$WALK" | awk -F'\t' -v list="$LIST" -v alt="$ALT" '
       j = order[i]; l = (j in land) ? norm(land[j]) : "none"
       hit = lands(l, place[j])
       if (!hit) { k = split(alts[words[j]], al, "\n"); for (x = 2; x <= k; x++) if (lands(l, al[x])) { hit = 1; break } }
+      # a place outside the target cannot be reached from a copy: the row that names it is the answer
+      if (!hit && place[j] ~ /^\.\.(\/|$)/) hit = lands(l, row[j])
       if (l == "none" || l == "") w = "stuck"
       else if (!hit) w = "wrong"
       else if (reads[j] + 0 <= 3) w = "pass"
