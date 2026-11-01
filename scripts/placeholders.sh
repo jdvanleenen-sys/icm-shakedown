@@ -26,7 +26,8 @@ T="$(cd "$T" && pwd)"
 AWKRX='\{\{[^}]+\}\}|\[YOUR [^]]+\]|(^|[^A-Za-z])TODO([^A-Za-z]|$)|(^|[^A-Za-z])TBD([^A-Za-z]|$)|[Ll]orem ipsum|NOT FILLED IN|<PRODUCT NAME>'
 counts="$(find "$T" \( -name .git -o -name node_modules -o -name _archive -o -name archive -o -name dist -o -name build \) -prune -o \
           -type f \( -name '*.md' -o -name '*.txt' -o -name '*.html' \) -print0 2>/dev/null \
-          | xargs -0 awk -v rx="$AWKRX" '
+          | AWKRX="$AWKRX" xargs -0 awk '
+              BEGIN { rx = ENVIRON["AWKRX"] }  # not -v: -v strips the backslashes the pattern needs
               FNR == 1 { fence = 0 }
               /^[[:space:]]*```/ { fence = !fence; next }
               fence { next }

@@ -30,6 +30,7 @@ printf '# Bad\n\nRead `docs/a.md` first, then `docs/missing.md`. Checks live in 
 printf 'Notes are in `notes.md`. Name files like `[brand]-[slug].md`. The site is `example.com/page`.\n' >> "$B/CLAUDE.md"
 printf 'Hello {{client name}}.\n' > "$B/docs/a.md"
 printf 'Owner: {{your name}}\n' >> "$B/CLAUDE.md"
+printf 'Call us at [YOUR PHONE].\n' > "$B/docs/voice.md"
 printf 'Hi {{name}}\n' > "$B/docs/page-template.html"
 FAKE="sk-ant-$(printf 'A%.0s' $(seq 1 30))"
 printf 'key = %s\n' "$FAKE" > "$B/docs/notes.md"
@@ -51,6 +52,8 @@ out="$(bash "$HERE/placeholders.sh" "$B" 2>&1)"; rc=$?
 expect_exit "placeholders fires on a slot" "$rc" 1
 expect_has  "placeholders names the entry file" "$out" "entry      1  CLAUDE.md"
 expect_has  "placeholders counts a page draft as background" "$out" "docs/a.md"
+expect_has  "placeholders catches a [YOUR ...] slot" "$out" "docs/voice.md"
+expect_not  "placeholders runs without awk escape warnings" "$out" "escape sequence"
 expect_not  "placeholders leaves a file named template alone" "$out" "page-template.html"
 mkdir -p "$W/doc"; printf '# Doc\n\nThe page fills `{{HEADLINE}}` for you.\n\n```\n{{EXAMPLE}}\n```\n' > "$W/doc/SKILL.md"
 out="$(bash "$HERE/placeholders.sh" "$W/doc" 2>&1)"; rc=$?
