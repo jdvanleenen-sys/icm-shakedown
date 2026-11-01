@@ -53,7 +53,9 @@ Scripts, run them, do not read them: `scripts/routes.sh`, `scripts/nested-repos.
    umbrella root so the walk tests the routing between workspaces too.
 2. **Results home:** if the target's `CLAUDE.md` or `CONTEXT.md` names a home for
    shakedowns, use that folder and leave that folder out of every layer. Otherwise use a folder
-   named `shakedowns/` beside the target, never inside the target.
+   named `shakedowns/` beside the target, never inside the target. Tell the person the full
+   path and ask before creating it or writing there: it is the only place outside the throwaway
+   copy the audit writes.
 3. **Scratch copy:** `bash scripts/copy-target.sh <target> <scratch>` into the session's
    temp or scratch folder. Layers 2 and 3 only ever touch the scratch copy. If it exits 1,
    the copy is incomplete: stop, fix the copy (a shorter scratch path usually does it), and

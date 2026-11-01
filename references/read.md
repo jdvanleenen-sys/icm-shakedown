@@ -81,7 +81,9 @@ Checks the commonest split truth by script: a router or index (CLAUDE.md, AGENTS
 CONTEXT.md, README.md, or a file marked `kind: ...index`) that calls a file draft, unresolved
 or "do not use" while the file itself says `status: approved`, or the other way round. Each
 DRIFT line names the index line and the file. One agent will refuse good work, another will
-use unchecked work, depending on which file it read.
+use unchecked work, depending on which file it read. Files in a `templates/` folder are skipped
+on purpose (a blank form stays a draft), so a router that argues with a template's status is
+found by reading, not by the script: check those lines by hand.
 
 Then pick 3 facts the owner cares about, like a price or where a thing lives. Search the tree
 for each 1. If the same fact is written in 2 places and the 2 disagree, the agent will quote
