@@ -106,7 +106,10 @@ table_rows() {  # $1 = file relative to the target, $2 = source word, $3 = the f
           k = index(tok, "/" base "/")
           if (k) p = substr(tok, k + length(base) + 2)
           else if (index(tok, base "/") == 1) p = substr(tok, length(base) + 2)
-          else { split(tok, seg, "/"); if ((seg[1] in top) && index(tok, "/")) { p = tok; how = "+" } }
+          # a path that only starts with the name of a top folder is a guess: keep it only when it
+          # names something inside that folder, since a bare `templates/` or `docs/` is in
+          # half the skills on any machine
+          else { split(tok, seg, "/"); if ((seg[1] in top) && seg[2] != "") { p = tok; how = "+" } }
           if (p == "" || p ~ /[<{*$|]/) continue
           sub(/[).,;:]+$/, "", p)
           printf "outside\t%s:%d\t%s\t%s\t%s\n", file, NR, (head == "" ? "(no heading)" : head), how, p

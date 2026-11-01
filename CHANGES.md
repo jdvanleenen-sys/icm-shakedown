@@ -62,12 +62,14 @@ Credit to RyMac is kept in SKILL.md, the README and the footer of every report.
 - `jobs.sh`: a route that leaves the workspace on purpose (`../../other-venture/`) is marked
   `outside`, not `missing`; the `../` fold no longer treats `..` as a folder name. A table
   keyed by a number (`| 7 | Build Anything |`) words the job as "7 Build Anything", not "7".
+  A skill that only names a common folder (`templates/`) is no longer read as a job in the
+  workspace being audited.
 - `placeholders.sh`: `[YOUR ...]` slots were never counted, because `awk -v` stripped the
   backslashes in the pattern. Found by the demo.
 - Removed the paths that only resolved on the author's machine.
 
 ## Proof
-`bash scripts/selftest.sh` plants a mistake and a clean case for every script: 116 of 116 hold.
+`bash scripts/selftest.sh` plants a mistake and a clean case for every script: 117 of 117 hold.
 Every new check was also run on 3 real ICM workspaces before release (including an umbrella with
 about 70 child workspaces); each finding was read by hand and the false alarms were fixed.
 

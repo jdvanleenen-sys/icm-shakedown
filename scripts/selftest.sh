@@ -299,6 +299,9 @@ no="$(printf '%s\n' "$out" | awk 'index($0, "../other-venture") { print $1; exit
 printf '%s\t_parked/CONTEXT.md\t2\n' "$no" > "$W/walk4.tsv"
 out="$(HOME="$JH3" bash "$HERE/jobs.sh" "$J3" --check "$W/walk4.tsv" 2>&1)"
 expect_not  "jobs --check passes a walker who stops at the row that leaves the workspace" "$out" "wrong job $no"
+mkdir -p "$JH3/.claude/skills/other"; printf '# Other skill\n\n## Files\nKeep your drafts in `courses/`.\n' > "$JH3/.claude/skills/other/SKILL.md"
+out="$(HOME="$JH3" bash "$HERE/jobs.sh" "$J3" 2>&1)"
+expect_not  "jobs ignores a skill that only names a common folder the workspace happens to have" "$out" "other: Files"
 
 # ---------- CLEAN ----------
 C="$W/clean"; mkdir -p "$C/docs"

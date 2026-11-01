@@ -38,7 +38,7 @@ problems planted in it. Then you run it on your own folders.
 2. **Install it.** Open Claude Code in the folder that holds `icm-shakedown`, and type:
    `install the icm-shakedown skill from this folder into my skills folder, then check it`
    Claude copies it to your skills folder (`.claude/skills/` in your home folder) and runs its
-   self-test. You want to see `116 of 116 held`.
+   self-test. You want to see `117 of 117 held`.
 3. **Close Claude Code and open it again**, so it sees the new skill.
 4. **Run the demo.** Type: `shake down the Summit Coat demo`
    Claude copies the demo into your Documents folder and audits that copy.

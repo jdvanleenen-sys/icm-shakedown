@@ -76,7 +76,7 @@ you install:
 
 The self-test builds a workspace full of planted mistakes and a clean workspace, then checks
 that every script catches the mistakes and stays quiet on the clean 1. You want to see
-every line held (`116 of 116 held` on this version).
+every line held (`117 of 117 held` on this version).
 
 ## Umbrella ICMs
 
