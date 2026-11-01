@@ -41,7 +41,11 @@ Scripts, run them, do not read them: `scripts/routes.sh`, `scripts/nested-repos.
    to the folder holding the root `CLAUDE.md`). **The demo:** when the person asks for the demo
    or Summit Coat, copy `demo/summit-coat/` from this skill's folder to `summit-coat-demo` in
    their Documents folder, and audit that copy. Never show them `demo/ANSWERS.md` before the
-   report is done; afterwards, point them to it so they can check the report. **Umbrella ICM:** if folders below the root
+   report is done; afterwards, point them to it so they can check the report. **No front
+   door:** if no `CLAUDE.md` or `AGENTS.md` sits at the top of the target or above it, stop
+   before layer 1. Say the folder is not set up for an AI to walk yet, ask whether another
+   folder was meant, and offer the demo. An audit of a folder with no entry file finds nothing
+   worth the time it costs. **Umbrella ICM:** if folders below the root
    hold their own `CLAUDE.md` or `AGENTS.md`, the target is an umbrella. In layer 1, run
    `scripts/umbrella.sh <target>` for routes, shape and read load (it audits the root and every
    child workspace, each as its own root), and run the other scripts once at the root. In layer
